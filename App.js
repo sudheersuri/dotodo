@@ -1,6 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import {Animated, Text, TouchableOpacity, View, TextInput, FlatList, SafeAreaView, KeyboardAvoidingView, Pressable, Platform} from 'react-native';
+import {Animated, Text, TouchableOpacity, View, TextInput, FlatList, SafeAreaView, KeyboardAvoidingView, Pressable, Platform, StyleSheet} from 'react-native';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { getData, addNewTask, updateData, deleteTask, clearData } from './functions';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,6 +11,30 @@ import {
    Montserrat_700Bold,
    Montserrat_900Black,
  } from '@expo-google-fonts/montserrat';
+import { useColorScheme} from 'react-native';
+
+  // Define your light and dark theme objects
+  const lightTheme = {
+    mode:'light',
+    backgroundColor: '#F3F3F3',
+    textColor: 'text-black',
+    moonColor:'#888888',
+    listItemBackgroundColor:'#FFFFFF',
+    taskNameColor:'#000000',
+    doneBackgroundColor:'#CEE5D4'
+    // ... other light theme styles
+  };
+
+  const darkTheme = {
+    mode:'dark',
+    backgroundColor: 'black',
+    textColor: 'text-white',
+    moonColor:'#FDF7D3',
+    listItemBackgroundColor:'#111111',
+    taskNameColor:'#FFFFFF',
+    doneBackgroundColor:'#102716'
+    // ... other dark theme styles
+  };
 
 
 const Stack = createStackNavigator(); 
@@ -18,7 +42,7 @@ const Stack = createStackNavigator();
 const ListScreen = ({ navigation }) => {
   const {globals,setGlobals}= useContext(GlobalContext);
   
-  const {tasks} = globals;
+  const {tasks,theme} = globals;
   const animation = useRef(new Animated.Value(0)).current;
   const listanimation = useRef(new Animated.Value(0)).current;
   const clearlistanimation = useRef(new Animated.Value(0)).current;
@@ -31,7 +55,7 @@ const ListScreen = ({ navigation }) => {
     Animated.timing(listanimation,{
       toValue:1,
       duration:700,
-      useNativeDriver:true
+      useNativeDriver:true,
     }).start();
   }, []);
   
@@ -51,16 +75,23 @@ const ListScreen = ({ navigation }) => {
   });
 
   return (
-    <SafeAreaView className={`h-full bg-gray-200 relative ${Platform.OS!=='ios'?'pt-12':''}`}>
+    <SafeAreaView className={`h-full  relative ${Platform.OS!=='ios'?'pt-12':''}`} style={{backgroundColor:theme.backgroundColor}}>
       <View className="flex-row justify-between mx-3 items-center">
-          <Text className="text-center text-black text-2xl font-bold"
+          <Text className={`text-center ${theme.textColor}  text-2xl font-bold`}
                 style={{fontFamily: 'Montserrat_700Bold'}}>Dotodo
           </Text>
+          <View className="flex-row">
+          <Pressable  onPress={() => 
+            setGlobals({...globals,theme: globals.theme.mode==='light' ? darkTheme : lightTheme})
+          } className="pr-2">
+            <Ionicons name="moon" size={22} color={theme.moonColor} />
+          </Pressable>
           <Pressable  onPress={() => clearData().then((res)=>{
            tasks.length && setGlobals({...globals,tasks:[]});
           })} className="pr-2">
             <Ionicons name="remove-circle-outline" size={24} color="#FF7474" />
           </Pressable>
+          </View>
       </View>
 
       {tasks.length === 0 ? (
@@ -79,7 +110,8 @@ const ListScreen = ({ navigation }) => {
               }]
           }}>
             <Pressable
-              className={`flex-row mx-3 my-1 p-3 border-radius-5 rounded-lg  ${item.done ? 'bg-green-300' : 'bg-white'}`}
+              className={`flex-row mx-3 my-1 p-3 border-radius-5 rounded-lg`}
+              style={{backgroundColor:item.done ? theme.doneBackgroundColor : theme.listItemBackgroundColor}}
               onPress={() => {
                 updateData(item.uid,!item.done).then((data)=>{ 
                       setGlobals({...globals,tasks:data});
@@ -88,8 +120,8 @@ const ListScreen = ({ navigation }) => {
               }}
             >
                 <View className="flex-row h-100" style={{flex:9}}>
-                    <Ionicons name="checkmark-circle" size={25} color={!item.done?'#D5D5D5':'#35A754'}/>
-                    <Text className="pl-1 mt-1 pr-1" style={{fontFamily: 'Montserrat_400Regular'}}>{item.name}</Text>
+                    <Ionicons name="checkmark-circle" size={25} color={!item.done?'#5F5F5F':'#449C5A'}/>
+                    <Text className="pl-1 mt-1 pr-1" style={{fontFamily: 'Montserrat_400Regular',color:theme.taskNameColor}}>{item.name}</Text>
                 </View>
                 <Pressable className=" h-100 items-end mt-1" style={{flex:1}} onPress={()=>
                   deleteTask(item.uid).then((data)=>{
@@ -135,10 +167,11 @@ const ListScreen = ({ navigation }) => {
 };
 
 const CreateScreen = ({ navigation }) => {
+  
   const [name, setname] = useState('');
   const {globals,setGlobals}= useContext(GlobalContext);
-  const inputRef = useRef();
  
+  const {theme} = globals;
 
   const handleCancel = () => {
     navigation.navigate('List');
@@ -164,17 +197,26 @@ const CreateScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView className={`flex-1 bg-white ${Platform.OS!=='ios'?'pt-8':''}`}>
+    <SafeAreaView className={`flex-1 ${theme.textColor} ${Platform.OS!=='ios'?'pt-8':''}`}
+    style={{backgroundColor:theme.backgroundColor}}
+    >
+      <View className="flex-row justify-between mx-3 items-center">
       <Text
-        className="font-bold text-black text-lg text-center py-3"
+        className={`font-bold text-lg text-center py-3 ${theme.textColor}`}
         style={{fontFamily: 'Montserrat_400Regular'}}
         onPress={() => navigation.navigate('List')}
       >
-        New
+        Add New
       </Text>
+      <Pressable  onPress={() => 
+            setGlobals({...globals,theme: globals.theme.mode==='light' ? darkTheme : lightTheme})
+          } className="pr-2">
+            <Ionicons name="moon" size={22} color={theme.moonColor} />
+      </Pressable>
+      </View>
      
       <TextInput
-        className="px-3 flex-1"
+        
         value={name}
         onChangeText={setname}
         placeholder="Enter task name"
@@ -184,13 +226,14 @@ const CreateScreen = ({ navigation }) => {
         style={{
          textAlignVertical: 'top',
         }}
+        className={`px-3 flex-1 text-lg ${theme.textColor}`}
       />
       <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View className="flex-row justify-end w-100 px-5 gap-3 mb-3">
           <TouchableOpacity
-            className="flex-row align-center rounded-full bg-gray-100 border-radius-5 p-5"
+            className="flex-row align-center rounded-full bg-gray-200 border-radius-5 p-5"
             onPress={handleCancel}
           >
             <Ionicons name='close-outline' size={24} color={'#000'} />
@@ -222,9 +265,14 @@ function MyStack() {
 
 export default function App() {
   
-  const [globals,setGlobals]= useState({tasks:[],theme:'light'});
 
- 
+  const colorScheme = useColorScheme();
+
+
+  // Choose the theme based on device appearance
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
+
+  const [globals,setGlobals]= useState({tasks:[],theme:theme});
 
   useEffect(() => {
     getData().then((data) => {
@@ -248,10 +296,17 @@ export default function App() {
     return <Text>Hi</Text>;
   }
   return (
-    <GlobalContext.Provider value={{globals,setGlobals}}>
-    <NavigationContainer>
-      <MyStack />
-    </NavigationContainer>
-    </GlobalContext.Provider>
+    
+        <GlobalContext.Provider value={{globals,setGlobals}}>
+        <NavigationContainer>
+          <MyStack />
+        </NavigationContainer>
+        </GlobalContext.Provider>
+    
   );
 }
+
+
+const styles = StyleSheet.create({
+  
+});
