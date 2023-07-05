@@ -54,7 +54,7 @@ const ListScreen = ({ navigation }) => {
     }).start();
     Animated.timing(listanimation,{
       toValue:1,
-      duration:700,
+      duration:1000,
       useNativeDriver:true,
     }).start();
   }, []);
@@ -71,7 +71,7 @@ const ListScreen = ({ navigation }) => {
   });
   const listItemAnimation = listanimation.interpolate({
     inputRange:[0,1],
-    outputRange:[-1000,0]
+    outputRange:[1000,0]
   });
 
   return (
@@ -120,7 +120,7 @@ const ListScreen = ({ navigation }) => {
               }}
             >
                 <View className="flex-row h-100" style={{flex:9}}>
-                    <Ionicons name="checkmark-circle" size={25} color={!item.done?'#5F5F5F':'#449C5A'}/>
+                    <Ionicons name="checkmark-circle" size={25} color={!item.done?'#D4D4D4':'#449C5A'}/>
                     <Text className="pl-1 mt-1 pr-1" style={{fontFamily: 'Montserrat_400Regular',color:theme.taskNameColor}}>{item.name}</Text>
                 </View>
                 <Pressable className=" h-100 items-end mt-1" style={{flex:1}} onPress={()=>
@@ -226,7 +226,7 @@ const CreateScreen = ({ navigation }) => {
         style={{
          textAlignVertical: 'top',
         }}
-        className={`px-3 flex-1 text-lg ${theme.textColor}`}
+        className={`px-3 flex-1 ${theme.textColor}`}
       />
       <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
