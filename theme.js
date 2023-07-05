@@ -4,6 +4,7 @@
     mode:'light',
     backgroundColor: '#F3F3F3',
     textColor: 'text-black',
+    createBackgroundColor:'white',
     moonColor:'#888888',
     listItemBackgroundColor:'#FFFFFF',
     taskNameColor:'#000000',
@@ -14,6 +15,7 @@
   const darkTheme = {
     mode:'dark',
     backgroundColor: 'black',
+    createBackgroundColor:'black',
     textColor: 'text-white',
     moonColor:'#FDF7D3',
     listItemBackgroundColor:'#111111',
