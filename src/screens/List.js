@@ -43,7 +43,7 @@ const List = ({ navigation }) => {
     return (
       <SafeAreaView className={`h-full  relative ${Platform.OS!=='ios'?'pt-12':''}`} style={{backgroundColor:theme.backgroundColor}}>
         <View className="flex-row justify-between mx-3 items-center">
-            <Text className={`text-center ${theme.textColor}  text-2xl font-bold`}
+            <Text className={`text-center ${theme.textColor} text-2xl font-bold`}
                   style={{fontFamily: 'Montserrat_700Bold'}}>Dotodo
             </Text>
             <View className="flex-row">

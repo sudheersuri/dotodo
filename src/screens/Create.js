@@ -37,7 +37,7 @@ const Create = ({ navigation }) => {
     }
   
     return (
-      <SafeAreaView className={`flex-1 ${theme.textColor} ${Platform.OS!=='ios'?'pt-8':''}`}
+      <SafeAreaView className={`flex-1 ${Platform.OS!=='ios'?'pt-8':''}`}
       style={{backgroundColor:theme.createBackgroundColor}}
       >
         <View className="flex-row justify-between mx-3 items-center">
